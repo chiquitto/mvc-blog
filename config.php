@@ -9,8 +9,11 @@ define('TITLE', 'Blogcurso 2000');
 
 define('BD_HOST', 'localhost');
 define('BD_USUARIO', 'root');
-define('BD_SENHA', 'vagrant');
+define('BD_SENHA', '001001');
 define('BD_NOME', 'blog');
+
+define('DATE_BD', 'Y-m-d');
+define('DATE_USUARIO', 'd/m/Y');
 
 define('CATEGORIA_INATIVO', '0');
 define('CATEGORIA_ATIVO', '1');

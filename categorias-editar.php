@@ -4,9 +4,18 @@ require './config.php';
 
 $msg = array();
 
+$idcategoria = 0;
 $categoria = '';
 $descricao = '';
 $situacao = CATEGORIA_ATIVO;
+
+if (isset($_POST['idcategoria'])) {
+    $idcategoria = (int) $_POST['idcategoria'];
+} elseif (isset($_GET['idcategoria'])) {
+    $idcategoria = (int) $_GET['idcategoria'];
+}
+
+$con = Conexao::getConexao();
 
 if ($_POST) {
     $categoria = $_POST['categoria'];
@@ -23,8 +32,11 @@ if ($_POST) {
     }
 
     if (!$msg) {
-        $sql = "Insert into categoria (categoria, descricao, situacao) VALUES
-        ('$categoria', '$descricao', '$situacao')";
+        $sql = "Update categoria Set
+            categoria = '$categoria',
+            descricao = '$descricao',
+            situacao = '$situacao'
+            Where idcategoria = $idcategoria";
 
         $con = Conexao::getConexao();
         try {
@@ -33,10 +45,22 @@ if ($_POST) {
             header('location: categorias.php');
             exit;
         } catch (PDOException $e) {
-            $msg[] = "Não foi possível inserir o registro. Motivo: " . $e->getMessage();
+            $msg[] = "Não foi possível atualizar o registro. Motivo: " . $e->getMessage();
             $msg[] = $sql;
         }
     }
+} else {
+    $sql = "Select categoria, descricao, situacao From categoria Where idcategoria = $idcategoria";
+    $stmt = $con->query($sql);
+
+    if ($stmt->rowCount() == 0) {
+        javascriptAlertFim("Registro inexistente", "./");
+    }
+
+    $admin = $stmt->fetch(PDO::FETCH_ASSOC);
+    $categoria = $admin['categoria'];
+    $descricao = $admin['descricao'];
+    $situacao = $admin['situacao'];
 }
 
 ?>
@@ -54,7 +78,7 @@ if ($_POST) {
 <div class="container">
 
     <div class="page-header">
-        <h1><i class="fa fa-cubes"></i> Cadastrar categoria</h1>
+        <h1><i class="fa fa-cubes"></i> Editar categoria</h1>
     </div>
 
     <?php if ($msg) {

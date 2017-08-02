@@ -45,21 +45,31 @@ $q = '';
             </tr>
             </thead>
             <tbody>
+            <?php
+            $con = Conexao::getConexao();
 
+            $sql = "Select idcategoria, categoria, situacao From categoria";
+            $stmt = $con->query($sql);
+            while ($categoria = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            ?>
                 <tr>
-                    <td>{idcategoria}</td>
+                    <td><?php echo $categoria['idcategoria']; ?></td>
                     <td>
+                        <?php if ($categoria['situacao'] == CATEGORIA_ATIVO) { ?>
                         <span class="label label-success">ativo</span>
+                        <?php } else { ?>
                         <span class="label label-warning">inativo</span>
+                        <?php } ?>
                     </td>
-                    <td>{categoria}</td>
+                    <td><?php echo $categoria['categoria']; ?></td>
                     <td>
-                        <a href="categorias-editar.php?idcategoria={idcategoria}"
+                        <a href="categorias-editar.php?idcategoria=<?php echo $categoria['idcategoria']; ?>"
                            title="Editar produto"><i class="fa fa-edit fa-lg"></i></a>
-                        <a href="categorias-apagar.php?idcategoria={idcategoria}"
-                           title="Remover categoria"><i class="fa fa-times fa-lg"></i></a>
+                        <!--<a href="categorias-apagar.php?idcategoria=<?php echo $categoria['idcategoria']; ?>"
+                           title="Remover categoria"><i class="fa fa-times fa-lg"></i></a>-->
                     </td>
                 </tr>
+            <?php } ?>
             </tbody>
         </table>
     </div>

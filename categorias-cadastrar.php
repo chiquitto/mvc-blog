@@ -9,33 +9,23 @@ $descricao = '';
 $situacao = CATEGORIA_ATIVO;
 
 if ($_POST) {
-    $categoria = $_POST['categoria'];
-    $descricao = $_POST['descricao'];
     $situacao = isset($_POST['situacao'])
         ? CATEGORIA_ATIVO : CATEGORIA_INATIVO;
 
-    // Validacoes
-    if ($categoria == '') {
-        $msg[] = 'Informe o nome da categoria';
-    }
-    if ($descricao == '') {
-        $msg[] = 'Informe a descrição';
-    }
+    $categoriaVo = new \App\Vo\Categoria();
+    $categoriaVo->setCategoria($_POST['categoria']);
+    $categoriaVo->setDescricao($_POST['descricao']);
+    $categoriaVo->setSituacao($situacao);
 
-    if (!$msg) {
-        $sql = "Insert into categoria (categoria, descricao, situacao) VALUES
-        ('$categoria', '$descricao', '$situacao')";
+    $categoriaDao = new \App\Dao\CategoriaDao();
 
-        $con = Conexao::getConexao();
-        try {
-            $stmt = $con->query($sql);
+    try {
+        $categoriaDao->cadastrar($categoriaVo);
 
-            header('location: categorias.php');
-            exit;
-        } catch (PDOException $e) {
-            $msg[] = "Não foi possível inserir o registro. Motivo: " . $e->getMessage();
-            $msg[] = $sql;
-        }
+        header('location: categorias.php');
+        exit;
+    } catch (Exception $e) {
+        $msg[] = $e->getMessage();
     }
 }
 

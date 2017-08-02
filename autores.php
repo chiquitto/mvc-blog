@@ -46,7 +46,7 @@ $q = '';
             </thead>
             <tbody>
             <?php
-            $con = Conexao::getConexao();
+            $con = \App\Conexao::getConexao();
 
             $sql = "Select idadmin, nome, login From admin";
             $stmt = $con->query($sql);

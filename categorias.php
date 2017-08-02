@@ -46,7 +46,7 @@ $q = '';
             </thead>
             <tbody>
             <?php
-            $con = Conexao::getConexao();
+            $con = \App\Conexao::getConexao();
 
             $sql = "Select idcategoria, categoria, situacao From categoria";
             $stmt = $con->query($sql);

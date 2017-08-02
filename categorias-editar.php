@@ -15,39 +15,27 @@ if (isset($_POST['idcategoria'])) {
     $idcategoria = (int) $_GET['idcategoria'];
 }
 
-$con = Conexao::getConexao();
+$con = \App\Conexao::getConexao();
 
 if ($_POST) {
-    $categoria = $_POST['categoria'];
-    $descricao = $_POST['descricao'];
     $situacao = isset($_POST['situacao'])
         ? CATEGORIA_ATIVO : CATEGORIA_INATIVO;
 
-    // Validacoes
-    if ($categoria == '') {
-        $msg[] = 'Informe o nome da categoria';
-    }
-    if ($descricao == '') {
-        $msg[] = 'Informe a descrição';
-    }
+    $categoriaVo = new \App\Vo\Categoria();
+    $categoriaVo->setIdcategoria($idcategoria);
+    $categoriaVo->setCategoria($_POST['categoria']);
+    $categoriaVo->setDescricao($_POST['descricao']);
+    $categoriaVo->setSituacao($situacao);
 
-    if (!$msg) {
-        $sql = "Update categoria Set
-            categoria = '$categoria',
-            descricao = '$descricao',
-            situacao = '$situacao'
-            Where idcategoria = $idcategoria";
+    $categoriaDao = new \App\Dao\CategoriaDao();
 
-        $con = Conexao::getConexao();
-        try {
-            $stmt = $con->query($sql);
+    try {
+        $categoriaDao->editar($categoriaVo);
 
-            header('location: categorias.php');
-            exit;
-        } catch (PDOException $e) {
-            $msg[] = "Não foi possível atualizar o registro. Motivo: " . $e->getMessage();
-            $msg[] = $sql;
-        }
+        header('location: categorias.php');
+        exit;
+    } catch (Exception $e) {
+        $msg[] = $e->getMessage();
     }
 } else {
     $sql = "Select categoria, descricao, situacao From categoria Where idcategoria = $idcategoria";

@@ -4,16 +4,23 @@ require './config.php';
 
 $msg = array();
 
+$idadmin = 0;
 $nome = '';
 $login = '';
 $senha = '';
 $senha2 = '';
 
+if (isset($_POST['idadmin'])) {
+    $idadmin = (int) $_POST['idadmin'];
+} elseif (isset($_GET['idadmin'])) {
+    $idadmin = (int) $_GET['idadmin'];
+}
+
+$con = Conexao::getConexao();
+
 if ($_POST) {
     $nome = $_POST['nome'];
     $login = $_POST['login'];
-    $senha = $_POST['senha'];
-    $senha2 = $_POST['senha2'];
 
     // Validacoes
     if ($nome == '') {
@@ -22,28 +29,34 @@ if ($_POST) {
     if ($login == '') {
         $msg[] = 'Informe o login';
     }
-    if ($senha == '') {
-        $msg[] = 'Informe a senha';
-    }
-    if ($senha != $senha2) {
-        $msg[] = 'A confirmação da senha deve ser igual a senha';
-    }
 
     if (!$msg) {
-        $sql = "Insert into admin (nome, login, senha) VALUES
-        ('$nome', '$login', '$senha')";
+        $sql = "Update admin Set
+        nome = '$nome',
+        login = '$login'
+        Where idadmin = $idadmin";
 
-        $con = Conexao::getConexao();
         try {
             $stmt = $con->query($sql);
 
             header('location: autores.php');
             exit;
         } catch (PDOException $e) {
-            $msg[] = "Não foi possível inserir o registro. Motivo: " . $e->getMessage();
+            $msg[] = "Não foi possível atualizar o registro. Motivo: " . $e->getMessage();
             $msg[] = $sql;
         }
     }
+} else {
+    $sql = "Select nome, login From admin Where idadmin = $idadmin";
+    $stmt = $con->query($sql);
+
+    if ($stmt->rowCount() == 0) {
+        javascriptAlertFim("Registro inexistente", "./");
+    }
+
+    $admin = $stmt->fetch(PDO::FETCH_ASSOC);
+    $nome = $admin['nome'];
+    $login = $admin['login'];
 }
 
 ?>
@@ -61,7 +74,7 @@ if ($_POST) {
 <div class="container">
 
     <div class="page-header">
-        <h1><i class="fa fa-user-secret"></i> Cadastrar autor</h1>
+        <h1><i class="fa fa-user-secret"></i> Editar autor</h1>
     </div>
 
     <?php if ($msg) {
@@ -82,19 +95,7 @@ if ($_POST) {
                    value="<?php echo $login; ?>">
         </div>
 
-        <div class="form-group">
-            <label for="fsenha">Senha</label>
-            <input type="password" class="form-control" id="fsenha" name="senha"
-                   value="<?php echo $senha; ?>">
-        </div>
-
-        <div class="form-group">
-            <label for="fsenha2">Confirme a senha</label>
-            <input type="password" class="form-control" id="fsenha2" name="senha2"
-                   value="<?php echo $senha2; ?>">
-        </div>
-
-        <button type="submit" class="btn btn-primary">Cadastrar</button>
+        <button type="submit" class="btn btn-primary">Salvar</button>
         <button type="reset" class="btn btn-danger">Cancelar</button>
     </form>
 

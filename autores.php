@@ -45,18 +45,25 @@ $q = '';
             </tr>
             </thead>
             <tbody>
+            <?php
+            $con = Conexao::getConexao();
 
+            $sql = "Select idadmin, nome, login From admin";
+            $stmt = $con->query($sql);
+            while ($admin = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            ?>
                 <tr>
-                    <td>{idadmin}</td>
-                    <td>{nome}</td>
-                    <td>{login}</td>
+                    <td><?php echo $admin['idadmin']; ?></td>
+                    <td><?php echo $admin['nome']; ?></td>
+                    <td><?php echo $admin['login']; ?></td>
                     <td>
-                        <a href="autores-editar.php?idadmin={idadmin}"
+                        <a href="autores-editar.php?idadmin=<?php echo $admin['idadmin']; ?>"
                            title="Editar produto"><i class="fa fa-edit fa-lg"></i></a>
-                        <a href="autores-apagar.php?idadmin={idadmin}"
-                           title="Remover categoria"><i class="fa fa-times fa-lg"></i></a>
+                        <!--<a href="autores-apagar.php?idadmin=<?php echo $admin['idadmin']; ?>"
+                           title="Remover categoria"><i class="fa fa-times fa-lg"></i></a>-->
                     </td>
                 </tr>
+            <?php } ?>
             </tbody>
         </table>
     </div>

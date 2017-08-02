@@ -48,24 +48,31 @@ $q = '';
             </tr>
             </thead>
             <tbody>
+            <?php
+            $con = Conexao::getConexao();
 
+            $sql = "Select idpostagem, idcategoria, titulo, datacadastro, idadmin, situacao From postagem";
+            $stmt = $con->query($sql);
+            while ($postagem = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            ?>
                 <tr>
-                    <td>{idpostagem}</td>
+                    <td><?php echo $postagem['idpostagem']; ?></td>
                     <td>
                         <span class="label label-success">ativo</span>
                         <span class="label label-warning">inativo</span>
                     </td>
-                    <td>{dataCadastro}</td>
-                    <td>{nomeAutor}</td>
-                    <td>{nomeCategoria}</td>
-                    <td>{titulo}</td>
+                    <td><?php echo $postagem['datacadastro']; ?></td>
+                    <td><?php echo $postagem['idadmin']; ?></td>
+                    <td><?php echo $postagem['idcategoria']; ?></td>
+                    <td><?php echo $postagem['titulo']; ?></td>
                     <td>
-                        <a href="postagens-editar.php?idpostagem={idpostagem}"
-                           title="Editar produto"><i class="fa fa-edit fa-lg"></i></a>
-                        <a href="postagens-apagar.php?idpostagem={idpostagem}"
-                           title="Remover categoria"><i class="fa fa-times fa-lg"></i></a>
+                        <a href="postagens-editar.php?idpostagem=<?php echo $postagem['idpostagem']; ?>"
+                           title="Editar postagem"><i class="fa fa-edit fa-lg"></i></a>
+                        <a href="postagens-apagar.php?idpostagem=<?php echo $postagem['idpostagem']; ?>"
+                           title="Remover postagem"><i class="fa fa-times fa-lg"></i></a>
                     </td>
                 </tr>
+            <?php } ?>
             </tbody>
         </table>
     </div>

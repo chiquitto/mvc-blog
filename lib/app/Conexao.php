@@ -23,7 +23,7 @@ class Conexao
             try {
                 static::$instance = new PDO($dsn, BD_USUARIO, BD_SENHA);
                 static::$instance->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                // $this->query('SET NAMES UTF8'); // UTF-8 Mysql
+                static::$instance->query('SET NAMES UTF8'); // UTF-8 Mysql
             } catch (PDOException $e) {
                 echo "Conexão falhou. Erro: " . $e->getMessage();
                 exit;

@@ -4,10 +4,20 @@ require './config.php';
 
 $msg = array();
 
+$idpostagem = 0;
+$nomeadmin = $_SESSION['idadmin'];
 $idcategoria = 0;
 $titulo = '';
 $texto = '';
 $situacao = POSTAGEM_ATIVO;
+
+if (isset($_POST['idpostagem'])) {
+    $idpostagem = (int) $_POST['idpostagem'];
+} elseif (isset($_GET['idpostagem'])) {
+    $idpostagem = (int) $_GET['idpostagem'];
+}
+
+$con = Conexao::getConexao();
 
 if ($_POST) {
     $idcategoria = (int) $_POST['idcategoria'];
@@ -31,11 +41,13 @@ if ($_POST) {
     $idadmin = $_SESSION['idadmin'];
 
     if (!$msg) {
-        $sql = "Insert into postagem (idcategoria, titulo, texto, datacadastro, idadmin, situacao)
-        VALUES
-        ($idcategoria, '$titulo', '$texto', '$datacadastro', $idadmin, '$situacao')";
+        $sql = "Update postagem Set
+          idcategoria = $idcategoria,
+          titulo = '$titulo',
+          texto = '$texto',
+          situacao = '$situacao'
+        Where idpostagem = $idpostagem";
 
-        $con = Conexao::getConexao();
         try {
             $stmt = $con->query($sql);
 
@@ -46,6 +58,22 @@ if ($_POST) {
             $msg[] = $sql;
         }
     }
+} else {
+    $sql = "Select idcategoria, titulo, texto, datacadastro, idadmin, situacao From postagem
+      Where idpostagem = $idpostagem";
+    $stmt = $con->query($sql);
+
+    if ($stmt->rowCount() == 0) {
+        javascriptAlertFim("Registro inexistente", "./");
+    }
+
+    $postagem = $stmt->fetch(PDO::FETCH_ASSOC);
+    $idcategoria = $postagem['idcategoria'];
+    $titulo = $postagem['titulo'];
+    $texto = $postagem['texto'];
+    $datacadastro = $postagem['datacadastro'];
+    $nomeadmin = $postagem['idadmin'];
+    $situacao = $postagem['situacao'];
 }
 
 ?>
@@ -75,7 +103,7 @@ if ($_POST) {
         <div class="form-group">
             <label for="fautor">Autor</label>
             <input type="text" class="form-control" id="fautor" name="autor" disabled
-                   value="<?php echo $_SESSION['nomeadmin']; ?>">
+                   value="<?php echo $nomeadmin; ?>">
         </div>
 
         <div class="form-group">

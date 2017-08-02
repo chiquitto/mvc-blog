@@ -95,4 +95,33 @@ SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
-Insert Into admin (nome, login, senha) VALUES ('Alisson G. Chiquitto', 'admin', 'admin');
+Insert Into admin (nome, login, senha) VALUES
+  ('Alisson G. Chiquitto', 'admin', 'admin');
+
+Insert Into categoria (categoria, descricao, situacao) VALUES
+  ('Jogos', 'Jogos', '1'),
+  ('Politica', 'Politica', '0'),
+  ('Esportes', 'Esportes', '1');
+
+Insert Into cidade (cidade, uf) VALUES
+  ('Bonito', 'MS'),
+  ('Campo Grande', 'MS'),
+  ('Cianorte', 'PR'),
+  ('Curitiba', 'PR'),
+  ('Dourados', 'MS'),
+  ('Florianopolis', 'SC'),
+  ('Guaira', 'PR'),
+  ('Navirai', 'MS'),
+  ('Pretopolis', 'RJ'),
+  ('Rio de Janeiro', 'RJ'),
+  ('Teresopolis', 'RJ'),
+  ('Umuarama', 'PR');
+
+Insert Into postagem (idcategoria, titulo, texto, datacadastro, idadmin, situacao) VALUES
+  (1, 'Counter Strike 1.6 é lançado', 'O lançamento foi na noite de ontem na maior feira de games do mundo', '2000-10-15', 1, 1),
+  (3, 'Corinthians conquista a série B', 'O Corinthians depois da desastrosa campanha do ano passado, enfim conseguiu subir para primeira divisão do Campeonato Brasileiro após conquistar o título da série B', '2010-12-05', 1, 1)
+;
+
+Insert Into usuario (nome, nascimento, idcidade) VALUES
+  ('Capitão América', '1917-04-07', 5),
+  ('Homem Aranha', '1945-08-28', 7);

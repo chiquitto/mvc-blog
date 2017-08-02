@@ -15,42 +15,34 @@ if (isset($_POST['idusuario'])) {
     $idusuario = (int) $_GET['idusuario'];
 }
 
-$con = Conexao::getConexao();
+$con = \App\Conexao::getConexao();
 
 if ($_POST) {
     $nome = $_POST['nome'];
     $nascimento = $_POST['nascimento'];
     $idcidade = (int) $_POST['idcidade'];
 
-    // Validacoes
-    if ($nome == '') {
-        $msg[] = 'Informe o nome completo';
-    }
-    if ($nascimento == '') {
-        $msg[] = 'Informe a data de nascimento';
-    }
-    if ($idcidade == 0) {
-        $msg[] = 'Informe a cidade';
+    $nascimentoDate = DateTime::createFromFormat(DATE_USUARIO, $nascimento);
+    if (!$nascimentoDate) {
+        $msg[] = "Informe uma data de nascimento no formato correto";
     }
 
     if (!$msg) {
-        $nascimentoDate = DateTime::createFromFormat(DATE_USUARIO, $nascimento);
-        $nascimentoBd = $nascimentoDate->format(DATE_BD);
+        $usuarioVo = new \App\Vo\Usuario();
+        $usuarioVo->setIdusuario($idusuario);
+        $usuarioVo->setNome($nome);
+        $usuarioVo->setNascimento($nascimentoDate);
+        $usuarioVo->setIdcidade($idcidade);
 
-        $sql = "Update usuario Set
-        nome = '$nome',
-        nascimento = '$nascimentoBd',
-        idcidade = $idcidade
-        Where idusuario = $idusuario";
+        $usuariDao = new \App\Dao\UsuarioDao();
 
         try {
-            $stmt = $con->query($sql);
+            $usuariDao->editar($usuarioVo);
 
             header('location: usuarios.php');
             exit;
-        } catch (PDOException $e) {
-            $msg[] = "Não foi possível atualizar o registro. Motivo: " . $e->getMessage();
-            $msg[] = $sql;
+        } catch (Exception $e) {
+            $msg[] = $e->getMessage();
         }
     }
 } else {

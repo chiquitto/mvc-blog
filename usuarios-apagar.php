@@ -9,18 +9,14 @@ if (isset($_GET['idusuario'])) {
     $idusuario = (int) $_GET['idusuario'];
 }
 
-$con = Conexao::getConexao();
-
-$sql = "Delete From usuario
-        Where idusuario = $idusuario";
+$usuarioDao = new \App\Dao\UsuarioDao();
 
 try {
-    $stmt = $con->query($sql);
+    $usuarioDao->apagar($idusuario);
 
     javascriptAlertFim("Registro apagado", 'usuarios.php');
 } catch (PDOException $e) {
-    $msg[] = "Não foi possível inserir o registro. Motivo: " . $e->getMessage();
-    $msg[] = $sql;
+    $msg[] = $e->getMessage();
 
     print_r($msg);
 }

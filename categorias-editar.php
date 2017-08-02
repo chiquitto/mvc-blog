@@ -18,13 +18,15 @@ if (isset($_POST['idcategoria'])) {
 $con = \App\Conexao::getConexao();
 
 if ($_POST) {
+    $categoria = $_POST['categoria'];
+    $descricao = $_POST['descricao'];
     $situacao = isset($_POST['situacao'])
         ? CATEGORIA_ATIVO : CATEGORIA_INATIVO;
 
     $categoriaVo = new \App\Vo\Categoria();
     $categoriaVo->setIdcategoria($idcategoria);
-    $categoriaVo->setCategoria($_POST['categoria']);
-    $categoriaVo->setDescricao($_POST['descricao']);
+    $categoriaVo->setCategoria($categoria);
+    $categoriaVo->setDescricao($descricao);
     $categoriaVo->setSituacao($situacao);
 
     $categoriaDao = new \App\Dao\CategoriaDao();

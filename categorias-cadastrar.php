@@ -9,12 +9,14 @@ $descricao = '';
 $situacao = CATEGORIA_ATIVO;
 
 if ($_POST) {
+    $categoria = $_POST['categoria'];
+    $descricao = $_POST['descricao'];
     $situacao = isset($_POST['situacao'])
         ? CATEGORIA_ATIVO : CATEGORIA_INATIVO;
 
     $categoriaVo = new \App\Vo\Categoria();
-    $categoriaVo->setCategoria($_POST['categoria']);
-    $categoriaVo->setDescricao($_POST['descricao']);
+    $categoriaVo->setCategoria($categoria);
+    $categoriaVo->setDescricao($descricao);
     $categoriaVo->setSituacao($situacao);
 
     $categoriaDao = new \App\Dao\CategoriaDao();

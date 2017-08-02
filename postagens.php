@@ -51,7 +51,18 @@ $q = '';
             <?php
             $con = Conexao::getConexao();
 
-            $sql = "Select idpostagem, idcategoria, titulo, datacadastro, idadmin, situacao From postagem";
+            $sql = "Select
+              p.idpostagem,
+              c.categoria,
+              p.titulo,
+              p.datacadastro,
+              a.nome autor,
+              p.situacao
+            From postagem p
+            Inner Join categoria c
+              On c.idcategoria = p.idcategoria
+            Inner Join admin a
+              On a.idadmin = p.idadmin";
             $stmt = $con->query($sql);
             while ($postagem = $stmt->fetch(PDO::FETCH_ASSOC)) {
 
@@ -65,8 +76,8 @@ $q = '';
                         <span class="label label-warning">inativo</span>
                     </td>
                     <td><?php echo $cadastroStr; ?></td>
-                    <td><?php echo $postagem['idadmin']; ?></td>
-                    <td><?php echo $postagem['idcategoria']; ?></td>
+                    <td><?php echo $postagem['autor']; ?></td>
+                    <td><?php echo $postagem['categoria']; ?></td>
                     <td><?php echo $postagem['titulo']; ?></td>
                     <td>
                         <a href="postagens-editar.php?idpostagem=<?php echo $postagem['idpostagem']; ?>"

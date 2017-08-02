@@ -48,14 +48,21 @@ $q = '';
             <?php
             $con = Conexao::getConexao();
 
-            $sql = "Select idusuario, nome, idcidade From usuario";
+            $sql = "Select
+              u.idusuario,
+              u.nome,
+              c.cidade,
+              c.uf
+            From usuario u
+            Inner Join cidade c
+              On c.idcidade = u.idcidade";
             $stmt = $con->query($sql);
             while ($usuario = $stmt->fetch(PDO::FETCH_ASSOC)) {
             ?>
                 <tr>
                     <td><?php echo $usuario['idusuario']; ?></td>
                     <td><?php echo $usuario['nome']; ?></td>
-                    <td><?php echo $usuario['idcidade']; ?></td>
+                    <td><?php echo $usuario['cidade']; ?>/<?php echo $usuario['uf']; ?></td>
                     <td>
                         <a href="usuarios-editar.php?idusuario=<?php echo $usuario['idusuario']; ?>"
                            title="Editar usuário"><i class="fa fa-edit fa-lg"></i></a>

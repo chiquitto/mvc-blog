@@ -115,8 +115,20 @@ if ($_POST) {
 
         <div class="form-group">
             <label for="fcategoria">Categoria</label>
-            <input type="number" class="form-control" id="fcategoria" name="idcategoria" placeholder="Código da categoria"
-                   value="<?php echo $idcategoria; ?>">
+            <select class="form-control" id="fcategoria" name="idcategoria">
+                <option value="0">Selecione</option>
+                <?php
+                $sql = "Select idcategoria, categoria From categoria
+                  Where situacao = '" . CATEGORIA_ATIVO . "'";
+                $stmtCategoria = $con->query($sql);
+                while($categoria = $stmtCategoria->fetch(PDO::FETCH_ASSOC)) {
+                    ?>
+                    <option value="<?php echo $categoria['idcategoria']; ?>"
+                        <?php if ($categoria['idcategoria'] == $idcategoria) { ?> selected<?php } ?>>
+                        <?php echo $categoria['categoria']; ?>
+                    </option>
+                <?php } ?>
+            </select>
         </div>
 
         <div class="form-group">

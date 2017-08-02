@@ -8,6 +8,8 @@ $nome = '';
 $nascimento = '';
 $idcidade = 0;
 
+$con = Conexao::getConexao();
+
 if ($_POST) {
     $nome = $_POST['nome'];
     $nascimento = $_POST['nascimento'];
@@ -32,7 +34,6 @@ if ($_POST) {
         VALUES
         ('$nome', '$nascimentoBd', $idcidade)";
 
-        $con = Conexao::getConexao();
         try {
             $stmt = $con->query($sql);
 
@@ -83,8 +84,19 @@ if ($_POST) {
 
         <div class="form-group">
             <label for="fidcidade">Cidade</label>
-            <input type="number" class="form-control" id="fidcidade" name="idcidade"
-                   value="<?php echo $idcidade; ?>">
+            <select class="form-control" id="fidcidade" name="idcidade">
+                <option value="0">Selecione</option>
+                <?php
+                $sql = "Select idcidade, cidade, uf From cidade";
+                $stmtCidade = $con->query($sql);
+                while($cidade = $stmtCidade->fetch(PDO::FETCH_ASSOC)) {
+                    ?>
+                    <option value="<?php echo $cidade['idcidade']; ?>"
+                        <?php if ($cidade['idcidade'] == $idcidade) { ?> selected<?php } ?>>
+                        <?php echo $cidade['cidade']; ?>/<?php echo $cidade['uf']; ?>
+                    </option>
+                <?php } ?>
+            </select>
         </div>
 
         <button type="submit" class="btn btn-primary">Cadastrar</button>

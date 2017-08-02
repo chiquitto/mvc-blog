@@ -37,7 +37,6 @@ if ($_POST) {
         $msg[] = 'Informe o texto';
     }
 
-    $datacadastro = date('Y-m-d');
     $idadmin = $_SESSION['idadmin'];
 
     if (!$msg) {
@@ -71,9 +70,11 @@ if ($_POST) {
     $idcategoria = $postagem['idcategoria'];
     $titulo = $postagem['titulo'];
     $texto = $postagem['texto'];
-    $datacadastro = $postagem['datacadastro'];
     $nomeadmin = $postagem['idadmin'];
     $situacao = $postagem['situacao'];
+
+    $datacadastroDate = DateTime::createFromFormat(DATE_BD, $postagem['datacadastro']);
+    $datacadastro = $datacadastroDate->format(DATE_USUARIO);
 }
 
 ?>
@@ -109,7 +110,7 @@ if ($_POST) {
         <div class="form-group">
             <label for="fdatacadastro">Data de cadastro</label>
             <input type="text" class="form-control" id="fdatacadastro" name="datacadastro" disabled
-                   value="<?php echo date('d/m/Y') ?>">
+                   value="<?php echo $datacadastro; ?>">
         </div>
 
         <div class="form-group">

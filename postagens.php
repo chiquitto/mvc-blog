@@ -54,6 +54,9 @@ $q = '';
             $sql = "Select idpostagem, idcategoria, titulo, datacadastro, idadmin, situacao From postagem";
             $stmt = $con->query($sql);
             while ($postagem = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+                $cadastroDate = DateTime::createFromFormat(DATE_BD, $postagem['datacadastro']);
+                $cadastroStr = $cadastroDate->format(DATE_USUARIO);
             ?>
                 <tr>
                     <td><?php echo $postagem['idpostagem']; ?></td>
@@ -61,7 +64,7 @@ $q = '';
                         <span class="label label-success">ativo</span>
                         <span class="label label-warning">inativo</span>
                     </td>
-                    <td><?php echo $postagem['datacadastro']; ?></td>
+                    <td><?php echo $cadastroStr; ?></td>
                     <td><?php echo $postagem['idadmin']; ?></td>
                     <td><?php echo $postagem['idcategoria']; ?></td>
                     <td><?php echo $postagem['titulo']; ?></td>

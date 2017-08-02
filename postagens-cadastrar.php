@@ -27,7 +27,7 @@ if ($_POST) {
         $msg[] = 'Informe o texto';
     }
 
-    $datacadastro = date('Y-m-d');
+    $datacadastro = date(DATE_BD);
     $idadmin = $_SESSION['idadmin'];
 
     if (!$msg) {

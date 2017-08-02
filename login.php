@@ -1,9 +1,32 @@
 <?php
-require './protege.php';
 require './config.php';
 
-if ($_POST) {
+$msg = array();
 
+if ($_POST) {
+    $con = Conexao::getConexao();
+
+    $login = $_POST['login'];
+    $senha = $_POST['senha'];
+
+    $sql = "Select idadmin, nome From
+    admin Where (login='$login') And (senha='$senha')";
+    $stmt = $con->query($sql);
+
+    if ($stmt->rowCount() == 1) {
+        // OK
+        $admin = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        session_start();
+        $_SESSION['idadmin'] = (int) $admin['idadmin'];
+        $_SESSION['nomeadmin'] = $admin['nome'];
+
+        header('location:./');
+
+        exit;
+    }
+
+    $msg[] = "Login e/ou Senha incorretos";
 }
 
 ?>
@@ -37,10 +60,14 @@ if ($_POST) {
 
             <h2 class="form-signin-heading">Faça seu login</h2>
 
+            <?php if ($msg) {
+                msgHtml($msg);
+            } ?>
+
             <form class="form-signin" role="form" method="post" action="login.php">
                 <div class="form-group">
-                    <label for="femail" class="sr-only">Email: </label>
-                    <input type="email" class="form-control" id="femail" name="email" placeholder="Endereço de e-mail">
+                    <label for="flogin" class="sr-only">Login: </label>
+                    <input type="text" class="form-control" id="flogin" name="login" placeholder="Login">
                 </div>
 
                 <div class="form-group">

@@ -19,7 +19,7 @@ require './config.php';
     <div class="jumbotron">
         <div class="container">
             <h1><?php echo TITLE; ?></h1>
-            <p>Bem vindo {{NOME}}</p>
+            <p>Bem vindo <?php echo $_SESSION['nomeadmin']; ?></p>
             <p>
             <div class="btn-group">
                 <a class="btn btn-primary btn-lg" role="button" href="postagens.php">

@@ -1,2 +1,5 @@
 *
 !.gitignore
+!smarty
+!smarty/cache
+!smarty/templates_c

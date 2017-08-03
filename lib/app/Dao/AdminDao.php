@@ -66,4 +66,25 @@ class AdminDao extends Dao
 
         return true;
     }
+
+    public function login(Admin $admin) {
+        $sql = "Select idadmin, nome
+          From admin
+          Where (login='{$admin->getLogin()}') And (senha='{$admin->getSenha()}')";
+
+        $con = Conexao::getConexao();
+
+        $stmt = $con->query($sql);
+
+        if ($stmt->rowCount() != 1) {
+            throw new \Exception('Login e/ou senha invalidos');
+        }
+
+        $adminBd = $stmt->fetch(\PDO::FETCH_ASSOC);
+
+        $admin->setIdadmin((int) $adminBd['idadmin']);
+        $admin->setNome($adminBd['nome']);
+
+        return true;
+    }
 }

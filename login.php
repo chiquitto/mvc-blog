@@ -4,29 +4,27 @@ require './config.php';
 $msg = array();
 
 if ($_POST) {
-    $con = \App\Conexao::getConexao();
-
     $login = $_POST['login'];
     $senha = $_POST['senha'];
 
-    $sql = "Select idadmin, nome From
-    admin Where (login='$login') And (senha='$senha')";
-    $stmt = $con->query($sql);
+    $adminVo = new \App\Vo\Admin();
+    $adminVo->setLogin($login);
+    $adminVo->setSenha($senha);
 
-    if ($stmt->rowCount() == 1) {
-        // OK
-        $admin = $stmt->fetch(PDO::FETCH_ASSOC);
+    $adminDao = new \App\Dao\AdminDao();
+
+    try {
+        $adminDao->login($adminVo);
 
         session_start();
-        $_SESSION['idadmin'] = (int) $admin['idadmin'];
-        $_SESSION['nomeadmin'] = $admin['nome'];
+        $_SESSION['idadmin'] = $adminVo->getIdadmin();
+        $_SESSION['nomeadmin'] = $adminVo->getNome();
 
         header('location:./');
-
         exit;
+    } catch (Exception $e) {
+        $msg[] = $e->getMessage();
     }
-
-    $msg[] = "Login e/ou Senha incorretos";
 }
 
 $view = \App\View::getView();

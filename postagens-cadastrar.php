@@ -9,7 +9,7 @@ $titulo = '';
 $texto = '';
 $situacao = POSTAGEM_ATIVO;
 
-$con = Conexao::getConexao();
+$con = \App\Conexao::getConexao();
 
 if ($_POST) {
     $idcategoria = (int) $_POST['idcategoria'];
@@ -18,33 +18,26 @@ if ($_POST) {
     $situacao = isset($_POST['situacao'])
         ? POSTAGEM_ATIVO : POSTAGEM_INATIVO;
 
-    // Validacoes
-    if ($idcategoria == 0) {
-        $msg[] = 'Informe a categoria';
-    }
-    if ($titulo == '') {
-        $msg[] = 'Informe o título';
-    }
-    if ($texto == '') {
-        $msg[] = 'Informe o texto';
-    }
-
-    $datacadastro = date(DATE_BD);
-    $idadmin = $_SESSION['idadmin'];
-
     if (!$msg) {
-        $sql = "Insert into postagem (idcategoria, titulo, texto, datacadastro, idadmin, situacao)
-        VALUES
-        ($idcategoria, '$titulo', '$texto', '$datacadastro', $idadmin, '$situacao')";
+
+        $idadmin = $_SESSION['idadmin'];
+
+        $postagemVo = new \App\Vo\Postagem();
+        $postagemVo->setIdcategoria($idcategoria);
+        $postagemVo->setTitulo($titulo);
+        $postagemVo->setTexto($texto);
+        $postagemVo->setIdadmin($idadmin);
+        $postagemVo->setSituacao($situacao);
+
+        $postagemDao = new \App\Dao\PostagemDao();
 
         try {
-            $stmt = $con->query($sql);
+            $postagemDao->cadastrar($postagemVo);
 
             header('location: postagens.php');
             exit;
-        } catch (PDOException $e) {
-            $msg[] = "Não foi possível inserir o registro. Motivo: " . $e->getMessage();
-            $msg[] = $sql;
+        } catch (Exception $e) {
+            $msg[] = $e->getMessage();
         }
     }
 }

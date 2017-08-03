@@ -9,18 +9,14 @@ if (isset($_GET['idpostagem'])) {
     $idpostagem = (int) $_GET['idpostagem'];
 }
 
-$con = Conexao::getConexao();
-
-$sql = "Delete From postagem
-        Where idpostagem = $idpostagem";
+$postagemDao = new \App\Dao\PostagemDao();
 
 try {
-    $stmt = $con->query($sql);
+    $postagemDao->apagar($idpostagem);
 
     javascriptAlertFim("Registro apagado", 'postagens.php');
 } catch (PDOException $e) {
-    $msg[] = "Não foi possível inserir o registro. Motivo: " . $e->getMessage();
-    $msg[] = $sql;
+    $msg[] = $e->getMessage();
 
     print_r($msg);
 }

@@ -4,7 +4,6 @@ namespace App\Dao;
 
 use App\Conexao;
 use App\Dao;
-use App\Vo\Categoria;
 use App\Vo\Usuario;
 
 class UsuarioDao extends Dao

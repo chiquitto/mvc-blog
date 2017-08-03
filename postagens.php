@@ -72,8 +72,11 @@ $q = '';
                 <tr>
                     <td><?php echo $postagem['idpostagem']; ?></td>
                     <td>
+                        <?php if ($postagem['situacao'] == POSTAGEM_ATIVO) { ?>
                         <span class="label label-success">ativo</span>
+                        <?php } else { ?>
                         <span class="label label-warning">inativo</span>
+                        <?php } ?>
                     </td>
                     <td><?php echo $cadastroStr; ?></td>
                     <td><?php echo $postagem['autor']; ?></td>

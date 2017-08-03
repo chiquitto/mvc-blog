@@ -5,7 +5,7 @@ require './config.php';
 $msg = array();
 
 $idpostagem = 0;
-$nomeadmin = $_SESSION['idadmin'];
+$nomeadmin = '';
 $idcategoria = 0;
 $titulo = '';
 $texto = '';
@@ -17,7 +17,7 @@ if (isset($_POST['idpostagem'])) {
     $idpostagem = (int) $_GET['idpostagem'];
 }
 
-$con = Conexao::getConexao();
+$con = \App\Conexao::getConexao();
 
 if ($_POST) {
     $idcategoria = (int) $_POST['idcategoria'];
@@ -26,39 +26,32 @@ if ($_POST) {
     $situacao = isset($_POST['situacao'])
         ? POSTAGEM_ATIVO : POSTAGEM_INATIVO;
 
-    // Validacoes
-    if ($idcategoria == 0) {
-        $msg[] = 'Informe a categoria';
-    }
-    if ($titulo == '') {
-        $msg[] = 'Informe o título';
-    }
-    if ($texto == '') {
-        $msg[] = 'Informe o texto';
-    }
-
-    $idadmin = $_SESSION['idadmin'];
-
     if (!$msg) {
-        $sql = "Update postagem Set
-          idcategoria = $idcategoria,
-          titulo = '$titulo',
-          texto = '$texto',
-          situacao = '$situacao'
-        Where idpostagem = $idpostagem";
+
+        $postagemVo = new \App\Vo\Postagem();
+        $postagemVo->setIdpostagem($idpostagem);
+        $postagemVo->setIdcategoria($idcategoria);
+        $postagemVo->setTitulo($titulo);
+        $postagemVo->setTexto($texto);
+        $postagemVo->setSituacao($situacao);
+
+        $postagemDao = new \App\Dao\PostagemDao();
 
         try {
-            $stmt = $con->query($sql);
+            $postagemDao->editar($postagemVo);
 
             header('location: postagens.php');
             exit;
-        } catch (PDOException $e) {
-            $msg[] = "Não foi possível inserir o registro. Motivo: " . $e->getMessage();
-            $msg[] = $sql;
+        } catch (Exception $e) {
+            $msg[] = $e->getMessage();
         }
     }
 } else {
-    $sql = "Select idcategoria, titulo, texto, datacadastro, idadmin, situacao From postagem
+    $sql = "Select
+        p.idcategoria, p.titulo, p.texto,
+        p.datacadastro, a.nome nomeadmin, p.situacao
+      From postagem p
+      Inner Join admin a On a.idadmin = p.idadmin
       Where idpostagem = $idpostagem";
     $stmt = $con->query($sql);
 
@@ -70,7 +63,7 @@ if ($_POST) {
     $idcategoria = $postagem['idcategoria'];
     $titulo = $postagem['titulo'];
     $texto = $postagem['texto'];
-    $nomeadmin = $postagem['idadmin'];
+    $nomeadmin = $postagem['nomeadmin'];
     $situacao = $postagem['situacao'];
 
     $datacadastroDate = DateTime::createFromFormat(DATE_BD, $postagem['datacadastro']);
@@ -92,7 +85,7 @@ if ($_POST) {
 <div class="container">
 
     <div class="page-header">
-        <h1><i class="fa fa-list"></i> Cadastrar postagem</h1>
+        <h1><i class="fa fa-list"></i> Editar postagem</h1>
     </div>
 
     <?php if ($msg) {

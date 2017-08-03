@@ -15,33 +15,25 @@ if ($_POST) {
     $senha = $_POST['senha'];
     $senha2 = $_POST['senha2'];
 
-    // Validacoes
-    if ($nome == '') {
-        $msg[] = 'Informe o nome';
-    }
-    if ($login == '') {
-        $msg[] = 'Informe o login';
-    }
-    if ($senha == '') {
-        $msg[] = 'Informe a senha';
-    }
     if ($senha != $senha2) {
         $msg[] = 'A confirmação da senha deve ser igual a senha';
     }
 
     if (!$msg) {
-        $sql = "Insert into admin (nome, login, senha) VALUES
-        ('$nome', '$login', '$senha')";
+        $adminVo = new \App\Vo\Admin();
+        $adminVo->setNome($nome);
+        $adminVo->setLogin($login);
+        $adminVo->setSenha($senha);
 
-        $con = Conexao::getConexao();
+        $autorDao = new \App\Dao\AdminDao();
+
         try {
-            $stmt = $con->query($sql);
+            $autorDao->cadastrar($adminVo);
 
             header('location: autores.php');
             exit;
-        } catch (PDOException $e) {
-            $msg[] = "Não foi possível inserir o registro. Motivo: " . $e->getMessage();
-            $msg[] = $sql;
+        } catch (Exception $e) {
+            $msg[] = $e->getMessage();
         }
     }
 }

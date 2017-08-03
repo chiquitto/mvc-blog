@@ -4,7 +4,7 @@ require './config.php';
 $msg = array();
 
 if ($_POST) {
-    $con = Conexao::getConexao();
+    $con = \App\Conexao::getConexao();
 
     $login = $_POST['login'];
     $senha = $_POST['senha'];

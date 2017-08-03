@@ -7,8 +7,6 @@ $msg = array();
 $idadmin = 0;
 $nome = '';
 $login = '';
-$senha = '';
-$senha2 = '';
 
 if (isset($_POST['idadmin'])) {
     $idadmin = (int) $_POST['idadmin'];
@@ -16,34 +14,27 @@ if (isset($_POST['idadmin'])) {
     $idadmin = (int) $_GET['idadmin'];
 }
 
-$con = Conexao::getConexao();
+$con = \App\Conexao::getConexao();
 
 if ($_POST) {
     $nome = $_POST['nome'];
     $login = $_POST['login'];
 
-    // Validacoes
-    if ($nome == '') {
-        $msg[] = 'Informe o nome';
-    }
-    if ($login == '') {
-        $msg[] = 'Informe o login';
-    }
-
     if (!$msg) {
-        $sql = "Update admin Set
-        nome = '$nome',
-        login = '$login'
-        Where idadmin = $idadmin";
+        $adminVo = new \App\Vo\Admin();
+        $adminVo->setIdadmin($idadmin);
+        $adminVo->setNome($nome);
+        $adminVo->setLogin($login);
+
+        $autorDao = new \App\Dao\AdminDao();
 
         try {
-            $stmt = $con->query($sql);
+            $autorDao->editar($adminVo);
 
             header('location: autores.php');
             exit;
-        } catch (PDOException $e) {
-            $msg[] = "Não foi possível atualizar o registro. Motivo: " . $e->getMessage();
-            $msg[] = $sql;
+        } catch (Exception $e) {
+            $msg[] = $e->getMessage();
         }
     }
 } else {
